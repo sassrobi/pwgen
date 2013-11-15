@@ -10,9 +10,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingWorker;
 
 /**
@@ -23,10 +27,18 @@ import javax.swing.SwingWorker;
 public class MainFrame extends JFrame implements ActionListener, PropertyChangeListener{
     
     JPanel base;
+    JMenuBar menuBar;
+    
+    JLabel countLabel;
+    JSpinner countSpinner;
+    JLabel lengthLabel;
+    JSpinner lengthSpinner;
     JButton goButton;
+    
     JScrollPane scroller;
     JTextArea textArea;
     SwingWorker worker;
+    
     
     //===Constructor===
     public MainFrame(String title){
@@ -37,9 +49,24 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
         base = new JPanel(new BorderLayout());
         setContentPane(base);
         
+        menuBar = new JMenuBar(); 
+        
+        countLabel = new JLabel("Count:");
+        menuBar.add(countLabel);
+        countSpinner = new JSpinner(new SpinnerNumberModel(10, 1, 100000, 1));
+        menuBar.add(countSpinner);
+        
+        lengthLabel = new JLabel("Length:");
+        menuBar.add(lengthLabel);
+        lengthSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 30, 1));
+        menuBar.add(lengthSpinner);
+        
         goButton = new JButton("GO");
         goButton.addActionListener(this);
-        base.add(goButton, BorderLayout.NORTH);
+        menuBar.add(goButton);
+        
+        
+        base.add(menuBar, BorderLayout.NORTH);
         
         textArea = new JTextArea("Click GO to generate passwords");
         scroller = new JScrollPane(textArea);
@@ -55,11 +82,14 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
             textArea.setText("Working...\n");
             goButton.setEnabled(false);
             
+            final int c = (int)countSpinner.getValue();
+            final int l = (int)lengthSpinner.getValue();
+            
             worker = new SwingWorker<String[], String>() {
                 
                 @Override
                 protected String[] doInBackground() throws Exception {
-                    PasswordGenerator pg = new PasswordGenerator(100000);
+                    PasswordGenerator pg = new PasswordGenerator(c, l);
                     return pg.getPasswords();
                 }
             };

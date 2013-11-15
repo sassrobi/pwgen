@@ -15,24 +15,39 @@ public class PasswordGenerator {
     private final char[] spec = "+!%/=().,".toCharArray();
 
     /**
-     * Contructor for generating only 1 password.
+     * Contructor for generating only 1, 8 characters long password.
      */
     public PasswordGenerator() {
-        this(1);
+        this(1, 8);
     }
 
     /**
-     * Constructor for generating <code>count</code> number of passwords.
+     * Constructor for generating <code>count</code> number of 
+     * 8 characters long passwords.
      * @param count The number of passwords
      */
     public PasswordGenerator(int count) {
+        this(count, 8);
+    }
+    
+    
+    /**
+     * Constructor for generating <code>count</code> number of 
+     * <code>length</code> characters long passwords.
+     * @param count The number of passwords
+     * @param length The length of each password
+     */
+    public PasswordGenerator(int count, int length){
         this.count = count;
+        this.length = length;
+        //TODO Check the values of these.
     }
 
     public String[] getPasswords() {
         String[] buffer = new String[count];
+        
         for (int i = 0; i < count; i++) {
-            buffer[i] = getOne(8);
+            buffer[i] = getOne(length);
         }
         return buffer;
     }
