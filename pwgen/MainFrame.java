@@ -22,28 +22,28 @@ import javax.swing.SwingWorker;
  */
 public class MainFrame extends JFrame implements ActionListener, PropertyChangeListener{
     
-    JPanel alap;
-    JButton mehetGomb;
+    JPanel base;
+    JButton goButton;
     JScrollPane scroller;
     JTextArea textArea;
     SwingWorker worker;
     
     //===Constructor===
-    public MainFrame(String cimsor){
-        super(cimsor);
+    public MainFrame(String title){
+        super(title);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(500, 400, 400, 300);
         
-        alap = new JPanel(new BorderLayout());
-        setContentPane(alap);
+        base = new JPanel(new BorderLayout());
+        setContentPane(base);
         
-        mehetGomb = new JButton("Mehet");
-        mehetGomb.addActionListener(this);
-        alap.add(mehetGomb, BorderLayout.NORTH);
+        goButton = new JButton("GO");
+        goButton.addActionListener(this);
+        base.add(goButton, BorderLayout.NORTH);
         
-        textArea = new JTextArea("Default text");
+        textArea = new JTextArea("Click GO to generate passwords");
         scroller = new JScrollPane(textArea);
-        alap.add(scroller, BorderLayout.CENTER);
+        base.add(scroller, BorderLayout.CENTER);
         
         
     }
@@ -51,15 +51,14 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
     //===ActionListener interface methods===
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(mehetGomb.equals(e.getSource())){
+        if(goButton.equals(e.getSource())){
             textArea.setText("Working...\n");
-            mehetGomb.setEnabled(false);
+            goButton.setEnabled(false);
             
             worker = new SwingWorker<String[], String>() {
                 
                 @Override
                 protected String[] doInBackground() throws Exception {
-                    //Thread.sleep(3000);
                     PasswordGenerator pg = new PasswordGenerator(100000);
                     return pg.getPasswords();
                 }
@@ -75,16 +74,16 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
         if("state".equals(evt.getPropertyName()) && evt.getNewValue() == SwingWorker.StateValue.DONE){
             textArea.setText("");
             try {
-                String[] jelszavak = (String[]) worker.get();
-                for(String jelszo:jelszavak){
-                    textArea.append(jelszo + "\n");
+                String[] passwords = (String[]) worker.get();
+                for(String password:passwords){
+                    textArea.append(password + "\n");
                 }
             } catch (InterruptedException ex) {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             } finally {
-                mehetGomb.setEnabled(true);
+                goButton.setEnabled(true);
             }
         }
     }
