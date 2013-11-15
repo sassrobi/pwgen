@@ -53,12 +53,12 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
         
         countLabel = new JLabel("Count:");
         menuBar.add(countLabel);
-        countSpinner = new JSpinner(new SpinnerNumberModel(10, 1, 100000, 1));
+        countSpinner = new JSpinner(new SpinnerNumberModel(10, 1, 1000000, 1));
         menuBar.add(countSpinner);
         
         lengthLabel = new JLabel("Length:");
         menuBar.add(lengthLabel);
-        lengthSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 30, 1));
+        lengthSpinner = new JSpinner(new SpinnerNumberModel(8, 1, 32, 1));
         menuBar.add(lengthSpinner);
         
         goButton = new JButton("GO");
@@ -105,9 +105,15 @@ public class MainFrame extends JFrame implements ActionListener, PropertyChangeL
             textArea.setText("");
             try {
                 String[] passwords = (String[]) worker.get();
+                StringBuilder builder = new StringBuilder();
                 for(String password:passwords){
-                    textArea.append(password + "\n");
+                    builder.append(password + "\n");
                 }
+                /* The JTextArea's append is much time consuming than
+                 * setText, its blocking the gui. That's why we use a 
+                 * StringBuilder.
+                 */
+                textArea.setText(builder.toString());
             } catch (InterruptedException ex) {
                 Logger.getLogger(MainFrame.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
